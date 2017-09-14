@@ -6,7 +6,10 @@ class NegociacaoController {
     this._inputData = $('#data');
     this._inputQuantidade = $('#quantidade');
     this._inputValor = $('#valor');
+
     this._listaNegociacoes = new ListaNegociacoes();
+    this._negociacoesView = new NegociacoesView($('#negociacoesView'));
+    this._negociacoesView.update(this._listaNegociacoes);
   }
 
   // adiciona uma negociacao na lista de negociacoes
@@ -14,7 +17,7 @@ class NegociacaoController {
     event.preventDefault();
 
     this._listaNegociacoes.adiciona(this._criaNegociacao());
-    console.log(this._listaNegociacoes.listaNegociacoes);
+    this._negociacoesView.update(this._listaNegociacoes);
     this._limpaFormulario();
   }
 
@@ -23,7 +26,7 @@ class NegociacaoController {
     // builderForm
     this._inputData.value = '2017-09-01';
     this._inputQuantidade.value = Math.floor(Math.random() * 10) + 1;
-    this._inputValor.value = (Math.random() * 200).toFixed(2);
+    this._inputValor.value = Math.random() * 200;
 
     return new Negociacao(
       DateHelper.strToDate(this._inputData.value),

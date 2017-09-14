@@ -3,7 +3,7 @@ class Negociacao {
   constructor(data, quantidade, valor) {
     this._data = new Date(data.getTime());
     this._quantidade = quantidade;
-    this._valor = parseFloat(valor);
+    this._valor = parseFloat(valor).toFixed(2);
     Object.freeze(this);
   }
 
