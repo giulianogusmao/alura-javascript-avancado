@@ -15,7 +15,8 @@ class MensagemView  extends View {
   }
 
   _clearTimer() {
-    setTimeout(() => {
+    clearTimeout(this._timer);
+    this._timer = setTimeout(() => {
       this.update();
     }, 3000);
   }
