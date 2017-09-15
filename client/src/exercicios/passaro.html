@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    class Aviao {
+
+      constructor(nome) {
+        this._nome = nome;
+      }
+
+      voa() {
+        alert(`${this._nome} está voando`);
+      }
+
+      ligaMotor() {
+        console.log('liga o motor');
+      }
+
+      fechaPortas() {
+        console.log('Portas sendo fechadas');
+      }
+    }
+
+    class Passaro {
+      constructor(nome) {
+        this._nome = nome;
+      }
+
+      voa() {
+        Reflect.apply(Aviao.prototype.voa, this, []);
+
+        // outras formas de emprestar uma funcao
+        // Aviao.prototype.voa.call(this);
+        // Aviao.prototype.voa.apply(this, []);
+      }
+    }
+
+    class Passaro2 {
+      constructor(nome) {
+        this._nome = nome;
+        this._aviao = new Aviao(nome);
+      }
+
+      voa() {
+        this._aviao.voa();
+      }
+    }
+
+    var passaro = new Passaro('Arara');
+    passaro.voa();
+
+    var passaro2 = new Passaro2('Galinha');
+    passaro2.voa();
+  </script>
+</body>
+
+</html>

@@ -1,8 +1,7 @@
 class ListaNegociacoes {
-  constructor(contexto, eventEmitter, emitterOnLoad) {
+  constructor(eventEmitter, emitterOnLoad) {
     this._listaNegociacoes = [];
     this._eventEmitter = eventEmitter;
-    this._eventContexto = contexto;
 
     if (emitterOnLoad) this._emitter();
   }
@@ -26,7 +25,6 @@ class ListaNegociacoes {
   // executa funcao recebida no contexto recebido passando esta classe como referencia
   _emitter() {
     if (typeof this._eventEmitter == 'function')
-      Reflect.apply(this._eventEmitter, this._eventContexto, [this]);
-      // this._eventEmitter(this);
+      this._eventEmitter(this);
   }
 }

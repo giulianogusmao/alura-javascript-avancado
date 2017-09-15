@@ -11,7 +11,12 @@ class NegociacaoController {
     this._mensagemView = new MensagemView($('#mensagemView'));
 
     this._negociacoesView = new NegociacoesView($('#negociacoesView'));
-    this._listaNegociacoes = new ListaNegociacoes(this, function(model) { this._negociacoesView.update(model) }, true);
+    /*
+      Quando utilizamos uma arrow function ela fica amarrada ao scopo no qual ela está sendo passada, isto é,
+      independente de onde essa arrow function seja executada, ela sempre estara relacionada ao contexto atual.
+      Enquanto que em uma funcção convencional o seu scopo this varia conforme o locol que é executada
+    */
+    this._listaNegociacoes = new ListaNegociacoes((model) => this._negociacoesView.update(model), true);
   }
 
   // adiciona uma negociacao na lista de negociacoes
