@@ -16,7 +16,29 @@ class NegociacaoController {
       independente de onde essa arrow function seja executada, ela sempre estara relacionada ao contexto atual.
       Enquanto que em uma funcção convencional o seu scopo this varia conforme o locol que é executada
     */
-    this._listaNegociacoes = new ListaNegociacoes((model) => this._negociacoesView.update(model), true);
+    // this._listaNegociacoes = new ListaNegociacoes((model) => this._negociacoesView.update(model), true);
+    let self = this
+
+    this._listaNegociacoes = new Proxy(new ListaNegociacoes(), {
+
+      get(target, prop, receiver) {
+
+        if (['adiciona', 'esvazia'].includes(prop) && typeof (target[prop]) == typeof (Function)) {
+
+          return function () {
+
+            console.log(`método '${prop}' interceptado`);
+
+            Reflect.apply(target[prop], target, arguments);
+
+            self._negociacoesView.update(target);
+
+          }
+        }
+
+        return Reflect.get(target, prop, receiver);
+      }
+    });
   }
 
   // adiciona uma negociacao na lista de negociacoes
