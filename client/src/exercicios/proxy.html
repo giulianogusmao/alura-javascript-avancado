@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <h1>Exercicio de encapsulamento com proxy</h1>
+  <pre>console.log...</pre>
+
+  <script>
+    let funcionario = { email: 'abc@abc.com' };
+
+    var proxyFunc = new Proxy(funcionario, {
+      get(target, prop, receiver) {
+        console.log(`acessando a propriedade: ${prop}`);
+        // console.log(target);
+        // console.log(prop);
+        // console.log(receiver);
+        return Reflect.get(target, prop, receiver);
+      }
+    });
+
+    console.log(proxyFunc.email);
+  </script>
+</body>
+
+</html>
