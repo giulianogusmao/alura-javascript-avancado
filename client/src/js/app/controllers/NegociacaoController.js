@@ -7,8 +7,10 @@ class NegociacaoController {
     this._inputQuantidade = $('#quantidade');
     this._inputValor = $('#valor');
 
-    this._mensagem = new Mensagem();
     this._mensagemView = new MensagemView($('#mensagemView'));
+    this._mensagem = ProxyFactory.create(
+      new Mensagem(), ['texto'], model => this._mensagemView.update(model)
+    );
 
     this._negociacoesView = new NegociacoesView($('#negociacoesView'));
     /*
@@ -17,28 +19,10 @@ class NegociacaoController {
       Enquanto que em uma funcção convencional o seu scopo this varia conforme o locol que é executada
     */
     // this._listaNegociacoes = new ListaNegociacoes((model) => this._negociacoesView.update(model), true);
-    let self = this
-
-    this._listaNegociacoes = new Proxy(new ListaNegociacoes(), {
-
-      get(target, prop, receiver) {
-
-        if (['adiciona', 'esvazia'].includes(prop) && typeof (target[prop]) == typeof (Function)) {
-
-          return function () {
-
-            console.log(`método '${prop}' interceptado`);
-
-            Reflect.apply(target[prop], target, arguments);
-
-            self._negociacoesView.update(target);
-
-          }
-        }
-
-        return Reflect.get(target, prop, receiver);
-      }
-    });
+    // atualizando através da proxy de forma que não suje o código do ListaNegociacoes
+    this._listaNegociacoes = ProxyFactory.create(
+      new ListaNegociacoes(), ['adiciona', 'esvazia'], model => this._negociacoesView.update(model)
+    );
   }
 
   // adiciona uma negociacao na lista de negociacoes
@@ -49,14 +33,12 @@ class NegociacaoController {
     this._limpaFormulario();
 
     this._mensagem.texto = "Negociação adicionada com sucesso!";
-    this._mensagemView.update(this._mensagem);
   }
 
   limpa() {
     this._listaNegociacoes.esvazia();
 
     this._mensagem.texto = "Lista de negociações apagada com sucesso!";
-    this._mensagemView.update(this._mensagem);
   }
 
   // captura os valores do formulário e retorna uma Negociacao instanciada
@@ -75,7 +57,7 @@ class NegociacaoController {
 
   // limpa todos os dados do formulariao e aplica o focus no campo data
   _limpaFormulario() {
-    // this._inputData.value = '';
+    this._inputData.value = '';
     this._inputQuantidade.value = 1;
     this._inputValor.value = 0;
 
