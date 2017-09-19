@@ -8,20 +8,13 @@ class NegociacaoController {
     this._inputValor = $('#valor');
 
     this._mensagemView = new MensagemView($('#mensagemView'));
-    this._mensagem = ProxyFactory.create(
-      new Mensagem(), ['texto'], model => this._mensagemView.update(model)
+    this._mensagem = new Bind(
+      new Mensagem(), this._mensagemView, 'texto'
     );
 
     this._negociacoesView = new NegociacoesView($('#negociacoesView'));
-    /*
-      Quando utilizamos uma arrow function ela fica amarrada ao scopo no qual ela está sendo passada, isto é,
-      independente de onde essa arrow function seja executada, ela sempre estara relacionada ao contexto atual.
-      Enquanto que em uma funcção convencional o seu scopo this varia conforme o locol que é executada
-    */
-    // this._listaNegociacoes = new ListaNegociacoes((model) => this._negociacoesView.update(model), true);
-    // atualizando através da proxy de forma que não suje o código do ListaNegociacoes
-    this._listaNegociacoes = ProxyFactory.create(
-      new ListaNegociacoes(), ['adiciona', 'esvazia'], model => this._negociacoesView.update(model)
+    this._listaNegociacoes = new Bind(
+      new ListaNegociacoes(), this._negociacoesView, 'adiciona', 'esvazia'
     );
   }
 

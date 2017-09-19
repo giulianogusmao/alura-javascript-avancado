@@ -1,11 +1,17 @@
 class MensagemView  extends View {
 
   template(model) {
-    return model ? `
+    let strTemplate = '';
+
+    try {
+    strTemplate = model.texto ? `
       <p class="alert alert-info">
         ${model.texto}
       </p>
     ` : '';
+    } catch (e) {}
+
+    return strTemplate;
   }
 
   update(model) {
