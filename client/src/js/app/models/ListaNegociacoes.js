@@ -17,4 +17,8 @@ class ListaNegociacoes {
     if (this._listaNegociacoes.length)
       this._listaNegociacoes.length = 0;
   }
+
+  get volumeTotal() {
+    return this._listaNegociacoes.reduce((total, item) => total = (parseFloat(total) + item.volume), 0.0);
+  }
 }

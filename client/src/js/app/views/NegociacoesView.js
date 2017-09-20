@@ -27,7 +27,7 @@ class NegociacoesView extends View {
           <tr>
             <td colspan="3"></td>
             <td>
-              ${model.listaNegociacoes.reduce((total, item) => total = (parseFloat(total) + item.volume).toFixed(2), 0.0)}
+              ${model.volumeTotal}
             </td>
           </tr>
         </tfoot>
