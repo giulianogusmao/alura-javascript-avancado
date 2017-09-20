@@ -34,15 +34,23 @@ class NegociacaoController {
 
   importaNegociacoes() {
     let service = new NegociacaoService();
-    service.getSemana((err, negociacoes) => {
-      if (err) {
-        this._mensagem.texto = err;
-        return;
-      }
 
-      negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao))
-      this._mensagem.texto = 'Negociações importadas com sucesso!';
-    });
+    // chamando promises de forma sincrona
+    Promise.all([
+      service.getSemana(),
+      service.getAnterior(),
+      service.getRetrasada()
+    ])
+      .then(negociacoes => {
+        negociacoes
+          /* o Promise.all retorna um array com os dados(array), por isso preciso achatar ele transformando
+            em um array com 1 dimensão */
+          .reduce((novoArray, array) => novoArray.concat(array), [])
+          .forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+
+        this._mensagem.texto = 'Negociações importadas com sucesso!';
+      })
+      .catch(err => this._mensagem.texto = err);
   }
 
   // captura os valores do formulário e retorna uma Negociacao instanciada
