@@ -14,6 +14,7 @@ class ListaNegociacoes {
 
   // limpa a lista
   esvazia() {
-    this._listaNegociacoes.length = 0;
+    if (this._listaNegociacoes.length)
+      this._listaNegociacoes.length = 0;
   }
 }

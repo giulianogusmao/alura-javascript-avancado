@@ -7,11 +7,14 @@ class DateHelper {
     o new Date trabalha os meses como sendo de 0-11, por isso, para realizar a conversão
     corretamente é necessário decrementar 1 do mês quando for converter uma string para um date e
     adicionar 1 para converter um date em string.
-   */
+  */
 
-  static dateToStr(date) {
-    let pt = new Intl.DateTimeFormat('pt-BR');
-    return pt.format(date);
+  // return string da data no formato dd/mm/yyyy ou yyyy-mm-dd
+  static dateToStr(date, isBr = true) {
+    let pt = new Intl.DateTimeFormat('pt-BR'),
+        dateBr = pt.format(date);
+
+    return isBr ? dateBr : dateBr.split('/').reverse().join('-');
   }
 
   static strToDate(str) {

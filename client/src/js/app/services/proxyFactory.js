@@ -7,8 +7,9 @@ class ProxyFactory {
           return function () {
             console.log(`método '${prop}' interceptado`);
 
-            Reflect.apply(target[prop], target, arguments);
-            return action(target);
+            let retorno = Reflect.apply(target[prop], target, arguments);
+            action(target);
+            return retorno;
           }
         }
 
@@ -16,13 +17,16 @@ class ProxyFactory {
       },
 
       set(target, prop, value, receiver) {
+        // atribui o valor passado
+        let retorno = Reflect.set(target, prop, value, receiver);
+
         if (props.includes(prop) && prop.indexOf('_') < 0) {
           console.log(`método '${prop}' interceptado`);
-          target[prop] = value;
+          // executa armadilha
           action(target);
         }
 
-        return Reflect.set(target, prop, value, receiver);
+        return retorno;
       },
 
     });
