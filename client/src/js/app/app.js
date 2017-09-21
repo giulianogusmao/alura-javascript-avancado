@@ -1,1 +1,1 @@
-let negociacaoController = new NegociacaoController();
+var negociacaoController = new NegociacaoController();

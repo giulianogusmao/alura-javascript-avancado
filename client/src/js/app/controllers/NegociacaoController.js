@@ -73,7 +73,7 @@ class NegociacaoController {
     // builderForm
     this._inputData.value = this._inputData.value || DateHelper.dateToStr(new Date(), false);
     this._inputQuantidade.value = this._inputQuantidade.value || Math.floor(Math.random() * 10) + 1;
-    this._inputValor.value = this._inputValor.value || Math.random() * 200;
+    this._inputValor.value = Number(this._inputValor.value) > 0 ? this._inputValor.value : Math.random() * 200;
 
     try {
       return new Negociacao(
