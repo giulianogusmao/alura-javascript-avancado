@@ -14,6 +14,8 @@ class NegociacaoController {
     this._listaNegociacoes = new Bind(
       new ListaNegociacoes(), new NegociacoesView($('#negociacoesView')), 'adiciona', 'esvazia', 'ordena'
     );
+
+    this._negociacaoService = new NegociacaoService();
   }
 
   // adiciona uma negociacao na lista de negociacoes
@@ -26,6 +28,17 @@ class NegociacaoController {
     this._mensagem.texto = "Negociação adicionada com sucesso!";
   }
 
+  envia() {
+    this._negociacaoService.postNegociacao(
+      this._criaNegociacao())
+      .then(x => {
+        console.log(x)
+        this._limpaFormulario();
+        this._mensagem.texto = 'Negociação enviada com sucesso!';
+      })
+      .catch(err => this._mensagem.texto = err);
+  }
+
   limpa() {
     this._listaNegociacoes.esvazia();
 
@@ -33,13 +46,11 @@ class NegociacaoController {
   }
 
   importaNegociacoes() {
-    let service = new NegociacaoService();
-
     // chamando promises de forma sincrona
     Promise.all([
-      service.getSemana(),
-      service.getAnterior(),
-      service.getRetrasada()
+      this._negociacaoService.getSemana(),
+      this._negociacaoService.getAnterior(),
+      this._negociacaoService.getRetrasada()
     ])
       .then(negociacoes => {
         negociacoes

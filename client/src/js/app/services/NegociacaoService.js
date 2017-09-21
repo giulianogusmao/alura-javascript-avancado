@@ -15,6 +15,15 @@ class NegociacaoService {
     return this._getNegociacao('/negociacoes/retrasada', 'retrasada');
   }
 
+  postNegociacao(negociacao) {
+    return this._http
+      .post('/negociacoes', negociacao.toJSON())
+      .then(msg => msg)
+      .catch((status, err) => {
+        throw new Error(`Não foi possível enviar a negociação. (Código do erro: ${status})`);
+      });
+  }
+
   _getNegociacao(url, msg) {
     return this._http
       .get(url)

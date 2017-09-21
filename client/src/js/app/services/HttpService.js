@@ -33,7 +33,7 @@ class HttpService {
           if (xhr.status == 200) {
             resolve(JSON.parse(xhr.responseText));
           } else {
-            reject(xhr.responseText);
+            reject(xhr.status, xhr.statusText);
           }
         }
       };

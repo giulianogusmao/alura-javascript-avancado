@@ -22,4 +22,13 @@ class Negociacao {
   get valor() {
     return this._valor;
   }
+
+  toJSON() {
+    return {
+      data: this._data,
+      quantidade: this._quantidade,
+      valor: this._valor,
+      volume: this._volume,
+    };
+  }
 }
