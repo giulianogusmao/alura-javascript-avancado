@@ -12,7 +12,7 @@ class NegociacaoController {
     );
 
     this._listaNegociacoes = new Bind(
-      new ListaNegociacoes(), new NegociacoesView($('#negociacoesView')), 'adiciona', 'esvazia'
+      new ListaNegociacoes(), new NegociacoesView($('#negociacoesView')), 'adiciona', 'esvazia', 'ordena'
     );
   }
 
@@ -51,6 +51,12 @@ class NegociacaoController {
         this._mensagem.texto = 'Negociações importadas com sucesso!';
       })
       .catch(err => this._mensagem.texto = err);
+  }
+
+  ordenaColuna(coluna) {
+    console.log(`Ordena ${coluna}: ${JSON.stringify(this._listaNegociacoes.listaNegociacoes)}`);
+    this._listaNegociacoes.ordena(coluna)
+    console.log(`Ordenada ${coluna}: ${JSON.stringify(this._listaNegociacoes.listaNegociacoes)}`);
   }
 
   // captura os valores do formulário e retorna uma Negociacao instanciada
