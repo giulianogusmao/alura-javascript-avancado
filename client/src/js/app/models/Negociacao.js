@@ -28,7 +28,7 @@ class Negociacao {
       data: this._data,
       quantidade: this._quantidade,
       valor: this._valor,
-      volume: this._volume,
+      volume: this.volume,
     };
   }
 }
