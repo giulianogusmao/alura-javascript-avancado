@@ -16,16 +16,28 @@ class NegociacaoController {
     );
 
     this._negociacaoService = new NegociacaoService();
+    this._carregaNegociacoes();
   }
 
   // adiciona uma negociacao na lista de negociacoes
   adiciona(event) {
     event.preventDefault();
 
-    this._listaNegociacoes.adiciona(this._criaNegociacao());
-    this._limpaFormulario();
+    let negociacao = this._criaNegociacao();
 
-    this._mensagem.texto = "Negociação adicionada com sucesso!";
+    ConnectionFactory
+      .getConnection()
+      .then(connection => {
+        new NegociacaoDao(connection)
+          .adiciona(negociacao)
+          .then(() => {
+            this._listaNegociacoes.adiciona(negociacao);
+            this._limpaFormulario();
+            this._mensagem.texto = "Negociação adicionada com sucesso!";
+          })
+          .catch(err => this._mensagem.texto = err)
+      })
+      .catch(err => console.error(err));
   }
 
   envia() {
@@ -40,9 +52,15 @@ class NegociacaoController {
   }
 
   limpa() {
-    this._listaNegociacoes.esvazia();
-
-    this._mensagem.texto = "Lista de negociações apagada com sucesso!";
+    ConnectionFactory
+      .getConnection()
+      .then(connection => new NegociacaoDao(connection))
+      .then(negociacaoDao => negociacaoDao.apagaTodos())
+      .then(() => {
+        this._listaNegociacoes.esvazia();
+        this._mensagem.texto = "Lista de negociações apagada com sucesso!";
+      })
+      .catch(err => this._mensagem.texto = err)
   }
 
   importaNegociacoes() {
@@ -78,10 +96,10 @@ class NegociacaoController {
     try {
       return new Negociacao(
         DateHelper.strToDate(this._inputData.value),
-        this._inputQuantidade.value,
-        this._inputValor.value
+        parseInt(this._inputQuantidade.value),
+        parseFloat(this._inputValor.value)
       );
-    } catch(err) {
+    } catch (err) {
       this._mensagem.texto = err;
       throw new Error(err); // gera o erro recebido para interromper o código e não continuar com a inclusão
     }
@@ -94,5 +112,17 @@ class NegociacaoController {
     this._inputValor.value = 0;
 
     this._inputData.focus();
+  }
+
+  _carregaNegociacoes() {
+    ConnectionFactory
+      .getConnection()
+      .then(connection => new NegociacaoDao(connection))
+      .then(negociacaoDao => negociacaoDao.getNegociacoes())
+      .then(negociacoes =>
+        negociacoes.forEach(negociacao =>
+            this._listaNegociacoes.adiciona(negociacao))
+      )
+      .catch(err => this._mensagem.texto = err)
   }
 }
