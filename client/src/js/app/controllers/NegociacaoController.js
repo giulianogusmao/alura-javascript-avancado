@@ -32,7 +32,7 @@ class NegociacaoController {
     this._negociacaoService.postNegociacao(
       this._criaNegociacao())
       .then(x => {
-        console.log(x)
+        // console.log(x);
         this._limpaFormulario();
         this._mensagem.texto = 'Negociação enviada com sucesso!';
       })
@@ -65,23 +65,26 @@ class NegociacaoController {
   }
 
   ordenaColuna(coluna) {
-    console.log(`Ordena ${coluna}: ${JSON.stringify(this._listaNegociacoes.listaNegociacoes)}`);
-    this._listaNegociacoes.ordena(coluna)
-    console.log(`Ordenada ${coluna}: ${JSON.stringify(this._listaNegociacoes.listaNegociacoes)}`);
+    this._listaNegociacoes.ordena(coluna);
   }
 
   // captura os valores do formulário e retorna uma Negociacao instanciada
   _criaNegociacao() {
     // builderForm
-    this._inputData.value = DateHelper.dateToStr(new Date(), false);
-    this._inputQuantidade.value = Math.floor(Math.random() * 10) + 1;
-    this._inputValor.value = Math.random() * 200;
+    this._inputData.value = this._inputData.value || DateHelper.dateToStr(new Date(), false);
+    this._inputQuantidade.value = this._inputQuantidade.value || Math.floor(Math.random() * 10) + 1;
+    this._inputValor.value = this._inputValor.value || Math.random() * 200;
 
-    return new Negociacao(
-      DateHelper.strToDate(this._inputData.value),
-      this._inputQuantidade.value,
-      this._inputValor.value
-    );
+    try {
+      return new Negociacao(
+        DateHelper.strToDate(this._inputData.value),
+        this._inputQuantidade.value,
+        this._inputValor.value
+      );
+    } catch(err) {
+      this._mensagem.texto = err;
+      throw new Error(err); // gera o erro recebido para interromper o código e não continuar com a inclusão
+    }
   }
 
   // limpa todos os dados do formulariao e aplica o focus no campo data
