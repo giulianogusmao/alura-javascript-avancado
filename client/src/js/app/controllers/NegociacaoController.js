@@ -16,7 +16,29 @@ class NegociacaoController {
     );
 
     this._negociacaoService = new NegociacaoService();
+    this._init();
+  }
+
+  _init() {
+    // carregar negociacaoes do indexedDB
     this._carregaNegociacoes();
+
+    // importando negociacoes automaticamente
+    // this.importaNegociacoes();
+    // this._timerImportaNegociacoes = setInterval(() => {
+    //   this.importaNegociacoes();
+    // }, 3000);
+  }
+
+  // lista negociacoes do indexedDB
+  _carregaNegociacoes() {
+    this._negociacaoService
+      .lista()
+      .then(negociacoes =>
+        negociacoes.forEach(negociacao =>
+            this._listaNegociacoes.adiciona(negociacao))
+      )
+      .catch(err => this._mensagem.texto = err);
   }
 
   // adiciona uma negociacao na lista de negociacoes
@@ -25,59 +47,42 @@ class NegociacaoController {
 
     let negociacao = this._criaNegociacao();
 
-    ConnectionFactory
-      .getConnection()
-      .then(connection => {
-        new NegociacaoDao(connection)
-          .adiciona(negociacao)
-          .then(() => {
-            this._listaNegociacoes.adiciona(negociacao);
-            this._limpaFormulario();
-            this._mensagem.texto = "Negociação adicionada com sucesso!";
-          })
-          .catch(err => this._mensagem.texto = err)
+    this._negociacaoService
+      .cadastra(negociacao)
+      .then(msg => {
+        this._listaNegociacoes.adiciona(negociacao);
+        this._limpaFormulario();
+        this._mensagem.texto = msg;
       })
-      .catch(err => console.error(err));
+      .catch(err => this._mensagem.texto = err);
   }
 
   envia() {
     this._negociacaoService.postNegociacao(
       this._criaNegociacao())
       .then(x => {
-        // console.log(x);
         this._limpaFormulario();
         this._mensagem.texto = 'Negociação enviada com sucesso!';
       })
       .catch(err => this._mensagem.texto = err);
   }
 
+  /* Após excluir todos os itens do indexedDb, limpa a lista de negociacoes */
   limpa() {
-    ConnectionFactory
-      .getConnection()
-      .then(connection => new NegociacaoDao(connection))
-      .then(negociacaoDao => negociacaoDao.apagaTodos())
-      .then(() => {
+    this._negociacaoService
+      .excluiTodos()
+      .then(msg => {
         this._listaNegociacoes.esvazia();
-        this._mensagem.texto = "Lista de negociações apagada com sucesso!";
+        this._mensagem.texto = msg;
       })
-      .catch(err => this._mensagem.texto = err)
+      .catch(err => this._mensagem.texto = err);
   }
 
   importaNegociacoes() {
     this._negociacaoService
-      .getNegociacoes()
-      .then(negociacoes => {
-        negociacoes
-          /* o Promise.all retorna um array com os dados(array), por isso preciso achatar ele transformando
-            em um array com 1 dimensão */
-          .reduce((novoArray, array) => novoArray.concat(array), [])
-          .filter(negociacao => {
-            // importar somente negociacoes que não foram importadas
-            let negociacaoStr = JSON.stringify(negociacao);
-            return !this._listaNegociacoes.listaNegociacoes.some(item => JSON.stringify(item) == negociacaoStr);
-          })
-          .forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-
+      .importa(this._listaNegociacoes.listaNegociacoes)
+      .then(listaNegociacoes => {
+        listaNegociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
         this._mensagem.texto = 'Negociações importadas com sucesso!';
       })
       .catch(err => this._mensagem.texto = err);
@@ -113,17 +118,5 @@ class NegociacaoController {
     this._inputValor.value = 0;
 
     this._inputData.focus();
-  }
-
-  _carregaNegociacoes() {
-    ConnectionFactory
-      .getConnection()
-      .then(connection => new NegociacaoDao(connection))
-      .then(negociacaoDao => negociacaoDao.getNegociacoes())
-      .then(negociacoes =>
-        negociacoes.forEach(negociacao =>
-            this._listaNegociacoes.adiciona(negociacao))
-      )
-      .catch(err => this._mensagem.texto = err)
   }
 }
