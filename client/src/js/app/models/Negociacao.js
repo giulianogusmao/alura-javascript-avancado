@@ -31,4 +31,8 @@ class Negociacao {
       volume: this.volume,
     };
   }
+
+  isEquals(compare) {
+    return JSON.stringify(this) == JSON.stringify(compare);
+  }
 }

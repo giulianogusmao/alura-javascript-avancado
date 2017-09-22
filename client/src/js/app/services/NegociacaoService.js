@@ -68,16 +68,14 @@ class NegociacaoService {
       .then(negociacoes =>
         negociacoes
           .reduce((novoArray, array) => novoArray.concat(array), []) /* o Promise.all retorna um array com os dados(array), por isso preciso achatar ele transformando em um array com 1 dimensão */
-          .filter(negociacao => {
-            let negociacaoStr = JSON.stringify(negociacao);
+          .filter(negociacao =>
             // importar somente negociacoes que não foram importadas
             // percorre a lista de negociacoes atual e verifica se a negociação já foi importada
-            return !listaAtual.some(item => JSON.stringify(item) == negociacaoStr);
-          })
+            !listaAtual.some(item => negociacao.isEquals(item))
+          )
       )
       .catch(err => {
-        console.error(err);
-        throw new Error('Não foi possível importar as negociações');
+        throw new Error(err);
       });
   }
 
@@ -85,7 +83,7 @@ class NegociacaoService {
     return this._http
       .post('/negociacoes', negociacao.toJSON())
       .then(msg => msg)
-      .catch((status, err) => {
+      .catch(err => {
         throw new Error(`Não foi possível enviar a negociação. (Código do erro: ${status})`);
       });
   }
@@ -96,7 +94,7 @@ class NegociacaoService {
       .then(negociacoes =>
         negociacoes.map(obj => new Negociacao(new Date(obj.data), obj.quantidade, obj.valor))
       )
-      .catch((status, err) => {
+      .catch(err => {
         throw new Error(`Não foi possível obter as negociações da semana ${msg}`)
       });
   }
