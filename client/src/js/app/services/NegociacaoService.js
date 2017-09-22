@@ -15,6 +15,14 @@ class NegociacaoService {
     return this._getNegociacao('/negociacoes/retrasada', 'retrasada');
   }
 
+  getNegociacoes() {
+    return Promise.all([
+      this.getSemana(),
+      this.getAnterior(),
+      this.getRetrasada()
+    ]);
+  }
+
   postNegociacao(negociacao) {
     return this._http
       .post('/negociacoes', negociacao.toJSON())

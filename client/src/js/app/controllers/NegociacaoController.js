@@ -64,17 +64,18 @@ class NegociacaoController {
   }
 
   importaNegociacoes() {
-    // chamando promises de forma sincrona
-    Promise.all([
-      this._negociacaoService.getSemana(),
-      this._negociacaoService.getAnterior(),
-      this._negociacaoService.getRetrasada()
-    ])
+    this._negociacaoService
+      .getNegociacoes()
       .then(negociacoes => {
         negociacoes
           /* o Promise.all retorna um array com os dados(array), por isso preciso achatar ele transformando
             em um array com 1 dimensão */
           .reduce((novoArray, array) => novoArray.concat(array), [])
+          .filter(negociacao => {
+            // importar somente negociacoes que não foram importadas
+            let negociacaoStr = JSON.stringify(negociacao);
+            return !this._listaNegociacoes.listaNegociacoes.some(item => JSON.stringify(item) == negociacaoStr);
+          })
           .forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
 
         this._mensagem.texto = 'Negociações importadas com sucesso!';

@@ -12,6 +12,13 @@ class NegociacaoDao {
     return new Promise((resolve, reject) => {
       let request = this._store.add(negociacao);
 
+      /* podemos abortar uma transação com o seguinte código:
+      transaction.abort();
+      transaction.onabort = e => {
+          console.log('Transação abortada');
+      };
+       */
+
       request.onsuccess = e => {
         resolve('Negociação adicionada com sucesso!');
       };
