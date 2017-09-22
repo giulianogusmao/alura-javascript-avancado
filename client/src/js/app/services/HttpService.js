@@ -28,7 +28,7 @@ class HttpService {
 
   _handleErrors(res) {
     if (res.ok) return res;
-    throw new Error(err);
+    throw new Error(res.statusText);
   }
 
   // _sendRequest(url, dado) {

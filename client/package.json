@@ -6,11 +6,15 @@
   "scripts": {
     "gulp": "gulp",
     "start": "gulp server",
+    "build-js": "babel src/js/app-es6 -d src/js/app --source-maps",
+    "watch-js": "babel src/js/app-es6 -d src/js/app --source-maps --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
     "browser-sync": "^2.18.13",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
