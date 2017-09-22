@@ -1,38 +1,91 @@
-class ProxyFactory {
-  static create(objeto, props, action) {
-    return new Proxy(objeto, {
+'use strict';
 
-      get(target, prop, receiver) {
-        if (props.includes(prop) && ProxyFactory._isFunction(target[prop])) {
-          return function () {
-            console.log(`método '${prop}' interceptado`);
+System.register([], function (_export, _context) {
+  "use strict";
 
-            let retorno = Reflect.apply(target[prop], target, arguments);
-            action(target);
-            return retorno;
+  var _typeof, _createClass, ProxyFactory;
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  return {
+    setters: [],
+    execute: function () {
+      _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+        return typeof obj;
+      } : function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+
+      _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];
+            descriptor.enumerable = descriptor.enumerable || false;
+            descriptor.configurable = true;
+            if ("value" in descriptor) descriptor.writable = true;
+            Object.defineProperty(target, descriptor.key, descriptor);
           }
         }
 
-        return Reflect.get(target, prop, receiver);
-      },
+        return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);
+          if (staticProps) defineProperties(Constructor, staticProps);
+          return Constructor;
+        };
+      }();
 
-      set(target, prop, value, receiver) {
-        // atribui o valor passado
-        let retorno = Reflect.set(target, prop, value, receiver);
-
-        if (props.includes(prop) && prop.indexOf('_') < 0) {
-          console.log(`método '${prop}' interceptado`);
-          // executa armadilha
-          action(target);
+      _export('ProxyFactory', ProxyFactory = function () {
+        function ProxyFactory() {
+          _classCallCheck(this, ProxyFactory);
         }
 
-        return retorno;
-      },
+        _createClass(ProxyFactory, null, [{
+          key: 'create',
+          value: function create(objeto, props, action) {
+            return new Proxy(objeto, {
+              get: function get(target, prop, receiver) {
+                if (props.includes(prop) && ProxyFactory._isFunction(target[prop])) {
+                  return function () {
+                    console.log('m\xE9todo \'' + prop + '\' interceptado');
 
-    });
-  }
+                    var retorno = Reflect.apply(target[prop], target, arguments);
+                    action(target);
+                    return retorno;
+                  };
+                }
 
-  static _isFunction(propriedade) {
-    return typeof (propriedade) == typeof (Function);
-  }
-}
+                return Reflect.get(target, prop, receiver);
+              },
+              set: function set(target, prop, value, receiver) {
+                // atribui o valor passado
+                var retorno = Reflect.set(target, prop, value, receiver);
+
+                if (props.includes(prop) && prop.indexOf('_') < 0) {
+                  console.log('m\xE9todo \'' + prop + '\' interceptado');
+                  // executa armadilha
+                  action(target);
+                }
+
+                return retorno;
+              }
+            });
+          }
+        }, {
+          key: '_isFunction',
+          value: function _isFunction(propriedade) {
+            return (typeof propriedade === 'undefined' ? 'undefined' : _typeof(propriedade)) == (typeof Function === 'undefined' ? 'undefined' : _typeof(Function));
+          }
+        }]);
+
+        return ProxyFactory;
+      }());
+
+      _export('ProxyFactory', ProxyFactory);
+    }
+  };
+});
+//# sourceMappingURL=proxyFactory.js.map
