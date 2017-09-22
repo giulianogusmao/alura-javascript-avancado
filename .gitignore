@@ -27,9 +27,7 @@ package-lock.json
 *.gz
 *.iso
 *.jar
-*.rar
 *.tar
-*.zip
 
 # Logs and databases #
 ######################
